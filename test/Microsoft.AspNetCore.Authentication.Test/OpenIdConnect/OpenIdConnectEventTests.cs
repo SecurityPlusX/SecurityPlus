@@ -16,11 +16,12 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Authentication;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 using Xunit;
 
 namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
@@ -37,6 +38,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
         private readonly Func<RemoteFailureContext, Task> FailureNotImpl = context => { throw new NotImplementedException("Failure", context.Failure); };
         private readonly Func<RedirectContext, Task> RedirectNotImpl = context => { throw new NotImplementedException("Redirect"); };
         private readonly Func<RemoteSignOutContext, Task> RemoteSignOutNotImpl = context => { throw new NotImplementedException("Remote"); };
+        private readonly Func<SignedOutRedirectContext, Task> RedirectToSignedOutNotImpl = context => { throw new NotImplementedException("SingedOut"); };
         private readonly RequestDelegate AppNotImpl = context => { throw new NotImplementedException("App"); };
 
         [Fact]
@@ -62,6 +64,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl,
             },
             context =>
             {
@@ -103,6 +106,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl,
             },
             context =>
             {
@@ -144,6 +148,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl,
             },
             AppNotImpl);
 
@@ -182,6 +187,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl,
             },
             context =>
             {
@@ -229,6 +235,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             context =>
             {
@@ -277,6 +284,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             AppNotImpl);
 
@@ -324,6 +332,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             AppNotImpl);
 
@@ -369,6 +378,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             context =>
             {
@@ -422,6 +432,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             context =>
             {
@@ -476,6 +487,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             AppNotImpl);
 
@@ -528,6 +540,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             AppNotImpl);
 
@@ -579,6 +592,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             context =>
             {
@@ -638,6 +652,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             context =>
             {
@@ -698,6 +713,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             AppNotImpl);
 
@@ -756,6 +772,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             AppNotImpl);
 
@@ -808,6 +825,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             context =>
             {
@@ -867,6 +885,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             context =>
             {
@@ -927,6 +946,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             AppNotImpl);
 
@@ -985,6 +1005,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             AppNotImpl);
 
@@ -1042,6 +1063,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             context =>
             {
@@ -1107,6 +1129,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             context =>
             {
@@ -1173,6 +1196,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             AppNotImpl);
 
@@ -1238,6 +1262,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             AppNotImpl);
 
@@ -1302,6 +1327,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             context =>
             {
@@ -1374,6 +1400,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             context =>
             {
@@ -1447,6 +1474,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             AppNotImpl);
 
@@ -1528,6 +1556,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             AppNotImpl);
 
@@ -1599,6 +1628,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             context =>
             {
@@ -1674,6 +1704,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             AppNotImpl);
 
@@ -1738,6 +1769,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             context =>
             {
@@ -1805,6 +1837,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
                 OnRedirectToIdentityProvider = RedirectNotImpl,
                 OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
                 OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
             },
             AppNotImpl);
 
@@ -1820,23 +1853,252 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
             Assert.True(ticektReceived);
         }
 
+        [Fact]
+        public async Task OnRedirectToIdentityProviderForSignOut_Invoked()
+        {
+            var forSignOut = false;
+            var server = CreateServer(new OpenIdConnectEvents()
+            {
+                OnRedirectToIdentityProvider = RedirectNotImpl,
+                OnRedirectToIdentityProviderForSignOut = context =>
+                {
+                    forSignOut = true;
+                    return Task.CompletedTask;
+                },
+                OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
+            },
+            context =>
+            {
+                return context.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
+            });
+
+            var client = server.CreateClient();
+            var response = await client.GetAsync("/");
+
+            Assert.Equal(HttpStatusCode.Found, response.StatusCode);
+            Assert.Equal("http://testhost/end", response.Headers.Location.GetLeftPart(UriPartial.Path));
+            Assert.True(forSignOut);
+        }
+
+        [Fact]
+        public async Task OnRedirectToIdentityProviderForSignOut_Handled_RedirectNotInvoked()
+        {
+            var forSignOut = false;
+            var server = CreateServer(new OpenIdConnectEvents()
+            {
+                OnRedirectToIdentityProvider = RedirectNotImpl,
+                OnRedirectToIdentityProviderForSignOut = context =>
+                {
+                    forSignOut = true;
+                    context.Response.StatusCode = StatusCodes.Status202Accepted;
+                    context.HandleResponse();
+                    return Task.CompletedTask;
+                },
+                OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
+            },
+            context =>
+            {
+                return context.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
+            });
+
+            var client = server.CreateClient();
+            var response = await client.GetAsync("/");
+
+            Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
+            Assert.Null(response.Headers.Location);
+            Assert.True(forSignOut);
+        }
+
+        [Fact]
+        public async Task OnRemoteSignOut_Invoked()
+        {
+            var forSignOut = false;
+            var server = CreateServer(new OpenIdConnectEvents()
+            {
+                OnRedirectToIdentityProvider = RedirectNotImpl,
+                OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
+                OnRemoteSignOut = context =>
+                {
+                    forSignOut = true;
+                    return Task.CompletedTask;
+                },
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
+            },
+            AppNotImpl);
+
+            var client = server.CreateClient();
+            var response = await client.GetAsync("/signout-oidc");
+
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.True(forSignOut);
+            Assert.True(response.Headers.TryGetValues(HeaderNames.SetCookie, out var values));
+            Assert.True(SetCookieHeaderValue.TryParseStrictList(values.ToList(), out var parsedValues));
+            Assert.Equal(1, parsedValues.Count);
+            Assert.True(StringSegment.IsNullOrEmpty(parsedValues.Single().Value));
+        }
+
+        [Fact]
+        public async Task OnRemoteSignOut_Handled_NoSignout()
+        {
+            var forSignOut = false;
+            var server = CreateServer(new OpenIdConnectEvents()
+            {
+                OnRedirectToIdentityProvider = RedirectNotImpl,
+                OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
+                OnRemoteSignOut = context =>
+                {
+                    forSignOut = true;
+                    context.Response.StatusCode = StatusCodes.Status202Accepted;
+                    context.HandleResponse();
+                    return Task.CompletedTask;
+                },
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
+            },
+            AppNotImpl);
+
+            var client = server.CreateClient();
+            var response = await client.GetAsync("/signout-oidc");
+
+            Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
+            Assert.True(forSignOut);
+            Assert.False(response.Headers.TryGetValues(HeaderNames.SetCookie, out var values));
+        }
+
+        [Fact]
+        public async Task OnRemoteSignOut_Skip_NoSignout()
+        {
+            var forSignOut = false;
+            var server = CreateServer(new OpenIdConnectEvents()
+            {
+                OnRedirectToIdentityProvider = RedirectNotImpl,
+                OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
+                OnRemoteSignOut = context =>
+                {
+                    forSignOut = true;
+                    context.SkipHandler();
+                    return Task.CompletedTask;
+                },
+                OnSignedOutCallbackRedirect = RedirectToSignedOutNotImpl
+            },
+            context =>
+            {
+                context.Response.StatusCode = StatusCodes.Status202Accepted;
+                return Task.CompletedTask;
+            });
+
+            var client = server.CreateClient();
+            var response = await client.GetAsync("/signout-oidc");
+
+            Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
+            Assert.True(forSignOut);
+            Assert.False(response.Headers.TryGetValues(HeaderNames.SetCookie, out var values));
+        }
+
+        [Fact]
+        public async Task OnRedirectToSignedOutRedirectUri_Invoked()
+        {
+            var forSignOut = false;
+            var server = CreateServer(new OpenIdConnectEvents()
+            {
+                OnRedirectToIdentityProvider = RedirectNotImpl,
+                OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
+                OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = context =>
+                {
+                    forSignOut = true;
+                    return Task.CompletedTask;
+                },
+            },
+            AppNotImpl);
+
+            var client = server.CreateClient();
+            var response = await client.GetAsync("/signout-callback-oidc?state=protected_state");
+
+            Assert.Equal(HttpStatusCode.Found, response.StatusCode);
+            Assert.Equal("http://testhost/redirect", response.Headers.Location.AbsoluteUri);
+            Assert.True(forSignOut);
+        }
+
+        [Fact]
+        public async Task OnRedirectToSignedOutRedirectUri_Handled_NoRedirect()
+        {
+            var forSignOut = false;
+            var server = CreateServer(new OpenIdConnectEvents()
+            {
+                OnRedirectToIdentityProvider = RedirectNotImpl,
+                OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
+                OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = context =>
+                {
+                    forSignOut = true;
+                    context.Response.StatusCode = StatusCodes.Status202Accepted;
+                    context.HandleResponse();
+                    return Task.CompletedTask;
+                },
+            },
+            AppNotImpl);
+
+            var client = server.CreateClient();
+            var response = await client.GetAsync("/signout-callback-oidc?state=protected_state");
+
+            Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
+            Assert.Null(response.Headers.Location);
+            Assert.True(forSignOut);
+        }
+
+        [Fact]
+        public async Task OnRedirectToSignedOutRedirectUri_Skipped_NoRedirect()
+        {
+            var forSignOut = false;
+            var server = CreateServer(new OpenIdConnectEvents()
+            {
+                OnRedirectToIdentityProvider = RedirectNotImpl,
+                OnRedirectToIdentityProviderForSignOut = RedirectNotImpl,
+                OnRemoteSignOut = RemoteSignOutNotImpl,
+                OnSignedOutCallbackRedirect = context =>
+                {
+                    forSignOut = true;
+                    context.SkipHandler();
+                    return Task.CompletedTask;
+                },
+            },
+            context =>
+            {
+                context.Response.StatusCode = StatusCodes.Status202Accepted;
+                return Task.CompletedTask;
+            });
+
+            var client = server.CreateClient();
+            var response = await client.GetAsync("/signout-callback-oidc?state=protected_state");
+
+            Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
+            Assert.Null(response.Headers.Location);
+            Assert.True(forSignOut);
+        }
+
         private TestServer CreateServer(OpenIdConnectEvents events, RequestDelegate appCode)
         {
             var builder = new WebHostBuilder()
                 .ConfigureServices(services =>
                 {
-                    services.AddAuthentication()
+                    services.AddAuthentication(auth =>
+                    {
+                        auth.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                        auth.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+                    })
                         .AddCookie()
                         .AddOpenIdConnect(o =>
                     {
                         o.Events = events;
-                        o.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                         o.ClientId = "ClientId";
                         o.GetClaimsFromUserInfoEndpoint = true;
                         o.Configuration = new OpenIdConnectConfiguration()
                         {
                             TokenEndpoint = "http://testhost/tokens",
                             UserInfoEndpoint = "http://testhost/user",
+                            EndSessionEndpoint = "http://testhost/end"
                         };
                         o.StateDataFormat = new TestStateDataFormat();
                         o.SecurityTokenValidator = new TestTokenValidator();
@@ -1868,7 +2130,7 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
 
             public string Protect(AuthenticationProperties data)
             {
-                throw new NotImplementedException();
+                return "protected_state";
             }
 
             public string Protect(AuthenticationProperties data, string purpose)
@@ -1879,11 +2141,13 @@ namespace Microsoft.AspNetCore.Authentication.Test.OpenIdConnect
             public AuthenticationProperties Unprotect(string protectedText)
             {
                 Assert.Equal("protected_state", protectedText);
-                return new AuthenticationProperties(new Dictionary<string, string>()
+                var properties = new AuthenticationProperties(new Dictionary<string, string>()
                 {
                     { ".xsrf", "corrilationId" },
                     { OpenIdConnectDefaults.RedirectUriForCodePropertiesKey, "redirect_uri" }
                 });
+                properties.RedirectUri = "http://testhost/redirect";
+                return properties;
             }
 
             public AuthenticationProperties Unprotect(string protectedText, string purpose)

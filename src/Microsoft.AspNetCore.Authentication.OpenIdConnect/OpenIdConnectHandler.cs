@@ -273,18 +273,31 @@ namespace Microsoft.AspNetCore.Authentication.OpenIdConnect
         /// Response to the callback from OpenId provider after session ended.
         /// </summary>
         /// <returns>A task executing the callback procedure</returns>
-        protected virtual Task<bool> HandleSignOutCallbackAsync()
+        protected async virtual Task<bool> HandleSignOutCallbackAsync()
         {
-            if (Request.Query.TryGetValue(OpenIdConnectParameterNames.State, out StringValues protectedState))
+            Request.Query.TryGetValue(OpenIdConnectParameterNames.State, out StringValues protectedState);
+            var properties = Options.StateDataFormat.Unprotect(protectedState);
+
+            var redirectContext = new SignedOutRedirectContext(Context, Scheme, Options, properties);
+
+            await Events.SignedOutCallbackRedirect(redirectContext);
+            if (redirectContext.Result?.Handled ?? false)
             {
-                var properties = Options.StateDataFormat.Unprotect(protectedState);
-                if (!string.IsNullOrEmpty(properties?.RedirectUri))
-                {
-                    Response.Redirect(properties.RedirectUri);
-                }
+                Logger.SignoutCallbackRedirectHandledResponse();
+                return true;
+            }
+            if (redirectContext.Result?.Skipped ?? false)
+            {
+                Logger.SignoutCallbackRedirectSkipped();
+                return false;
             }
 
-            return Task.FromResult(true);
+            if (!string.IsNullOrEmpty(properties?.RedirectUri))
+            {
+                Response.Redirect(properties.RedirectUri);
+            }
+
+            return true;
         }
 
         /// <summary>
